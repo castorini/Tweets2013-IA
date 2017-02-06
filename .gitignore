@@ -1,0 +1,11 @@
+02ex
+03ex
+*.txt
+*.log
+ids
+lib
+logFeb
+*.out
+*.iml
+warcbase
+target/
