@@ -26,13 +26,13 @@ Use `hadoop fs -get archivedFeb .`
 
 Automate this script
 
- ### TREC'15:
- 2015-07-19-00.gz to 2015-07-29-23.gz
+### TREC'15:
+2015-07-19-00.gz to 2015-07-29-23.gz
  
- ### TREC'16:
- 2016-08-01-00.gz to 2016-08-11-23.gz
+### TREC'16:
+2016-08-01-00.gz to 2016-08-11-23.gz
  
- ### To-do:
- Fix the versioning
+### To-do:
+Fix the versioning
  
- Automate it across the collections
+Automate it across the collections
