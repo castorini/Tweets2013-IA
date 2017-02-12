@@ -1,6 +1,11 @@
 # Texamine
 To examine if the Trec13 tweets were from Spritzer
 
+First build the package
+```
+mvn clean package
+```
+
 ### Tweets'13 results
 
 Month  | Overlap
@@ -48,3 +53,9 @@ Archives not available
 Fix the versioning
  
 Automate it across the collections
+
+#### Delete Analysis:
+
+```
+spark-submit --jars lib/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar --class ca.uwaterloo.cs.texamine.deleteAnalysisTREC target/sigir17-1.0-SNAPSHOT.jar --num-executors 50 --executor-cores 10 --executor-memory 40G 
+```
