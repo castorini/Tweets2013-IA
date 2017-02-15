@@ -39,6 +39,16 @@ Use `hadoop fs -get archivedFeb .`
 
 Automate this script
 
+
+#### To index the tweets collection:
+
+First, rename and copy the files to a single directory. Since we are repeating the experiments here for TREC2013, first copy
+the the unzipped files corresponding to Feb first into this new directory. Now, move the march file, but prepend with march
+
+```
+while read -r file; do new_file=$(rev <<< "$file" | sed 's~/~_~' | rev); new2=$(rev <<< "$new_file" | sed 's~/~_~' | rev) ; echo $file "../../twitter-tools/twitterData/March$new2"; done < <(find . -type f)
+```
+
 ### TREC'15:
 
 2015-07-19-00.gz to 2015-07-29-23.gz
