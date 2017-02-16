@@ -49,6 +49,18 @@ the the unzipped files corresponding to Feb first into this new directory. Now, 
 while read -r file; do new_file=$(rev <<< "$file" | sed 's~/~_~' | rev); new2=$(rev <<< "$new_file" | sed 's~/~_~' | rev) ; echo $file "../../twitter-tools/twitterData/March$new2"; done < <(find . -type f)
 ```
 
+Delete the tweets before indexing. We do not know how far Jimmy waited before deleting the tweets. It seems like up until June. The collection size is 243.
+
+```
+for d in */ ; do   cat $d/*; done > twt-id-deleted.txt
+cat twt-id-deleted.txt | wc -l
+```
+should give you 15722282
+
+That is 259057030 - 15722282 = 243334748 is the total number of statuses we have.
+
+Now, repeat the overlap experiments after deleting the Trec delete tweets.
+
 ### TREC'15:
 
 2015-07-19-00.gz to 2015-07-29-23.gz
