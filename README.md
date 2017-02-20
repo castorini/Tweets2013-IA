@@ -95,3 +95,46 @@ Download 2013 collection
 
 Rename and copy it to HDFS. 
 As of now, 2014 adn 2015 is perfect. Make more space and extract 2016 too
+
+
+
+# Revisiting
+
+Since some things seem to have gone wrong, I will be repeating the experiments here
+
+### Overlap analysis:
+
+Things that we need:
+ - number of json statuses delivered, unique statuses <- for Feb and March 2013
+ - number of 'delete' tags
+ - do the above for both trec and archive collection
+ - reprensent them in set notation
+ 
+The collections used:
+
+TREC: /collections/tweets/Tweets2013/
+IA: 
+
+ Table goes here. 
+ 
+ ### Dealing with Spark
+ Joblistener exceptions are common and do not affect the job. Ignore them!
+ 
+ For large files, repartition them first.;
+ ```
+ val trec13 = RecordLoader.loadTweets("/collections/tweets/Tweets2013/", sc).repartition(sc.defaultParallelism * 50)
+ ```
+
+### Ad-hoc retrieval
+
+Report effective measures from 5 sources:
+1. Thrift: waiting for Jimmy to send the API details
+2. T - D (this is done, just update the tables)
+3. D - T (done, update the tables)
+4. deletion on T (up to today)
+5. deltion on A (up to today)
+
+```
+sh target/appassembler/bin/SearchTweets -index tweets2013-IA-index-del -bm25 -topics topics.microblog2013.txt -output run.ia.del.mb13.txt
+```
+ 
