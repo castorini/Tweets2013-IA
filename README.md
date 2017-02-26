@@ -137,4 +137,13 @@ Report effective measures from 5 sources:
 ```
 sh target/appassembler/bin/SearchTweets -index tweets2013-IA-index-del -bm25 -topics topics.microblog2013.txt -output run.ia.del.mb13.txt
 ```
+ ### Stat tests:
  
+ Pairs		 		  | p-value(MAP)		   |p-value (P30)
+----------------------|------------------------|--------------
+T-D (13/02 - 13/06)	  |0.7993				   |0.9999
+A-D (13/02 - 13/06)	  |0.4162				   |0.7374
+T-D (unmod)			  |0.5051				   |0.8957
+A-D (unmod)			  |0.2658				   |0.7385
+T-D (mod)			  |0.8982				   |0.8957
+A-D (mod)			  |0.5469				   |0.7385
