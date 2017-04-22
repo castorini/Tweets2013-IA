@@ -1,4 +1,11 @@
-# Texamine
+# Tweets-2013 Internet Archives
+
+The delete list used in the paper can be downloaded from [here](https://drive.google.com/drive/folders/0B2u_nClt6NbzckdycjRGY0Vqc2c?usp=sharing)
+
+========================================
+
+Retain the following notes for now. Needs reorganization and updating.
+
 To examine if the Trec13 tweets were from Spritzer
 
 First build the package
