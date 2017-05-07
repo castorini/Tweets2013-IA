@@ -1,51 +1,72 @@
-# Tweets-2013 Internet Archives
+# Tweets2013 Collection from the Internet Archive
+
+This is the documentation corresponding to the experiments reported in the short paper titled, 
+"Finally, a Downloadable Test Collection of Tweets". You can find the paper [here](link-goes-here).
+
+#### Download the collection:
+
+Download the the tweet datasets from the following sources:
+
+- [ArchiveTeam JSON Download of Twitter Stream 2013-02](https://archive.org/details/archiveteam-twitter-stream-2013-02)
+- [ArchiveTeam JSON Download of Twitter Stream 2013-03](https://archive.org/details/archiveteam-twitter-stream-2013-03)
+
+
+#### Verify the checksum!
+``` 
+md5sum archiveteam-twitter-stream-2013-02.tar .
+md5sum archiveteam-twitter-stream-2013-03.tar .  
+```
+
+#### Extract 
+```
+tar -xvf archiveteam-twitter-stream-2013-02.tar 
+tar -xvf archiveteam-twitter-stream-2013-03.tar
+```
+
+#### Combine
+Copy the extracted contents into a folder named `ArchivedTweets2013`
+ 
+#### Copy to HDFS:
+
+Use `hadoop fs -put ArchivedTweets2013 .` 
+
+#### Collection stats:
+To obtain the collection stats as presented in Table 1 and Table 2 in the paper:
+
+1. Clone and setup warcbase. Follow [this](https://github.com/lintool/warcbase) for detailed instructions.
+2. Start a spark-shell:
+```
+spark-shell   --jars lib/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar --num-executors 50 \
+ --executor-cores 10 --executor-memory 40G 
+```
+3. Run [collectionStats.scala](/scripts/collectionStats.scala)
+
+##### Table1: Collection Statistics:
+
+Source                    | Count
+--------------------------|---------
+&#124;T&#124;           | 259,035,603
+&#124;A&#124;           | 246,615,368
+&#124;T U A&#124;       | 260,382,756
+&#124;T and A&#124; | 245,268,215
+&#124;T - A&#124;       | 13,767,388
+&#124;A - T&#124;       | 1,347,153
+
+
+##### Table2: Overlap Analysis:
+Collection                                     | Overlap
+-----------------------------------------------|---------
+1 - &#124;(T - A)&#124;/&#124;T&#124;          | 94.69%
+1 - &#124;(A - T)&#124;/&#124;A&#124;          | 99.45%
+&#124;T and A&#124;/&#124;T&#124;              | 94.69%
+
+
+### Deletion Stats:
+
 
 The delete list used in the paper can be downloaded from [here](https://drive.google.com/drive/folders/0B2u_nClt6NbzckdycjRGY0Vqc2c?usp=sharing)
 
 ========================================
-
-Retain the following notes for now. Needs reorganization and updating.
-
-To examine if the Trec13 tweets were from Spritzer
-
-First build the package
-```
-mvn clean package
-```
-
-### Tweets'13 results
-
-Month  | Overlap
--------|--------
-Feb    | 92.00
-March  | 97.54
-avg    | 94.77
-
-
-Track/BM25 | MAP  | P30
------------|------|------
-MB2013     |0.2248|0.4200
-MB2014     |0.3718|0.6145
-
-#### Verify checksum!
-``` 
-md5sum archiveteam-twitter-stream-2013-02.tar . 
-```
-#### Extract 
-
-```
-tar -xvf archiveteam-twitter-stream-2013-02.tar
-```
-#### Rename
-```
- while read -r file; do new_file=$(rev <<< "$file" | sed 's~/~_~' | rev); new2=$(rev <<< "$new_file" | sed 's~/~_~' | rev) ; mv $file "../03ex/$new2"; done < <(find . -type f)
- ```
-#### Copy the from HDFS to local:
-
-Use `hadoop fs -get archivedFeb .` 
-
-Automate this script
-
 
 #### To index the tweets collection:
 
