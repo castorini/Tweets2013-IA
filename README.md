@@ -93,113 +93,67 @@ Source| Count
 
 The delete list used in the paper can be downloaded from [here](https://drive.google.com/drive/folders/0B2u_nClt6NbzckdycjRGY0Vqc2c?usp=sharing)
 
-========================================
+### Missing qrels
 
-#### To index the tweets collection:
+Source                        | missing reldocs  |missing qrels
+------------------------------|------------------|--------------
+&#124;T − D(13/02-13/12)&#124;| 220 (1.12%)      |1,820 (1.41%)
+&#124;A − D(13/02-13/12)&#124;| 209 (1.06%)      | 1,707 (1.32%)
+&#124;T − D(13/02-14/12)&#124;| 539 (2.74%)      | 4,456 (3.45%)
+&#124;A − D(13/02-14/12)&#124;| 513 (2.61%)      | 4,190 (3.24%)
+&#124;T − D(13/02-15/12)&#124;| 816 (4.15%)      | 6,576 (5.09%)
+&#124;A − D(13/02-15/12)&#124;| 776 (3.95%)      | 6,193 (4.79%)
+&#124;T − D(13/02-16/12)&#124;| 1,095 (5.57%)    | 8,500 (6.58%)
+&#124;A − D(13/02-16/12)&#124;| 1,042 (5.30%)    | 7,997 (6.19%)
 
-First, rename and copy the files to a single directory. Since we are repeating the experiments here for TREC2013, first copy
-the the unzipped files corresponding to Feb first into this new directory. Now, move the march file, but prepend with march
+### To index the tweets collection:
 
+Create .bz2 delete list for Internet Archive:
 ```
-while read -r file; do new_file=$(rev <<< "$file" | sed 's~/~_~' | rev); new2=$(rev <<< "$new_file" | sed 's~/~_~' | rev) ; echo $file "../../twitter-tools/twitterData/March$new2"; done < <(find . -type f)
-```
-
-Delete the tweets before indexing. We do not know how far Jimmy waited before deleting the tweets. It seems like up until June. The collection size is 243.
-
-```
-for d in */ ; do   cat $d/*; done > twt-id-deleted.txt
-cat twt-id-deleted.txt | wc -l
-```
-should give you 15722282
-
-That is 259057030 - 15722282 = 243334748 is the total number of statuses we have.
-
-Now, repeat the overlap experiments after deleting the Trec delete tweets.
-
-### TREC'15:
-
-2015-07-19-00.gz to 2015-07-29-23.gz
-
-Month  | Overlap
--------|--------
-Jul    | 97.68%
-
- 
-### TREC'16:
-2016-08-01-00.gz to 2016-08-11-23.gz
-Archives not available
- 
-### To-do:
-Fix the versioning
- 
-Automate it across the collections
-
-#### Delete Analysis:
-
-```
-spark-submit --jars lib/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar --class ca.uwaterloo.cs.texamine.deleteAnalysisTREC target/sigir17-1.0-SNAPSHOT.jar --num-executors 50 --executor-cores 10 --executor-memory 40G 
+cd deletes-ia
+for d in */ ; do   cat $d/*; done > ../delete-list-13-ia-now.txt
+bzip2 delete-list-13-ia-now.txt
 ```
 
-For IA:
-
-Download 2013 collection
-
+Create .bz2 delete list for Trec Microblog:
 ```
-./extract.sh
+cd deletes-trec
+for d in */ ; do   cat $d/*; done > ../delete-list-13-trec-now.txt
+bzip2 delete-list-13-trec-now.txt
 ```
 
-Rename and copy it to HDFS. 
-As of now, 2014 adn 2015 is perfect. Make more space and extract 2016 too
+##### Index
 
+Clone and build [Anserini] (https://github.com/lintool/Anserini)
+```
+git clone https://github.com/castorini/Anserini.git
+cd Anserini && mvn clean package appassembler:assemble
+```
+Checkout to `twitter-search`
+```
+git checkout twitter-search
+```
+Index the IA collections:
+```
+sh target/appassembler/bin/IndexTweets -collection <path of IA collection> -deletes delete-list-13-ia-now.txt -index \
+tweets2013-IA-index-del -optimize -store
+```
 
-
-# Revisiting
-
-Since some things seem to have gone wrong, I will be repeating the experiments here
-
-### Overlap analysis:
-
-Things that we need:
- - number of json statuses delivered, unique statuses <- for Feb and March 2013
- - number of 'delete' tags
- - do the above for both trec and archive collection
- - reprensent them in set notation
- 
-The collections used:
-
-TREC: /collections/tweets/Tweets2013/
-IA: 
-
- Table goes here. 
- 
- ### Dealing with Spark
- Joblistener exceptions are common and do not affect the job. Ignore them!
- 
- For large files, repartition them first.;
- ```
- val trec13 = RecordLoader.loadTweets("/collections/tweets/Tweets2013/", sc).repartition(sc.defaultParallelism * 50)
- ```
-
-### Ad-hoc retrieval
-
-Report effective measures from 5 sources:
-1. Thrift: waiting for Jimmy to send the API details
-2. T - D (this is done, just update the tables)
-3. D - T (done, update the tables)
-4. deletion on T (up to today)
-5. deltion on A (up to today)
-
+##### Search
 ```
 sh target/appassembler/bin/SearchTweets -index tweets2013-IA-index-del -bm25 -topics topics.microblog2013.txt -output run.ia.del.mb13.txt
 ```
- ### Stat tests:
- 
- Pairs		 		             | p-value(MAP)|p-value (P30)
-------------------------|-------------|--------------
-T-D (13/02 - 13/06)	    |0.7993				   |0.9999
-A-D (13/02 - 13/06)	    |0.4162				   |0.7374
-T-D (13/02 - 16/12)			  |0.5051				   |0.8957
-A-D (13/02 - 16/12)			  |0.2658				   |0.7385
-T-D\* (13/02 - 16/12)			  |0.8982				   |0.8957
-A-D\* (13/02 - 16/12)			  |0.5469				   |0.7385
-\*: with modified qrels
+
+#### Evaluate
+
+Download the latest `trec_eval` code:
+```
+wget http://trec.nist.gov/trec_eval/trec_eval_latest.tar.gz
+tar -xvf trec_eval_latest.tar.gz  
+cd trec_eval.9.0/ 
+make
+```
+Evaluate on different configuations to obtain the results as shown in Table 5 of the paper:
+```
+eval/trec_eval.9.0/trec_eval qrels.mb.txt run.a-d.mb.txt
+```
