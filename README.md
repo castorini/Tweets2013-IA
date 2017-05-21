@@ -124,7 +124,7 @@ bzip2 delete-list-13-trec-now.txt
 
 ##### Index
 
-Clone and build [Anserini] (https://github.com/lintool/Anserini)
+Clone and build [Anserini](https://github.com/lintool/Anserini)
 ```
 git clone https://github.com/castorini/Anserini.git
 cd Anserini && mvn clean package appassembler:assemble
