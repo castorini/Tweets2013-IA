@@ -1,7 +1,7 @@
 # Tweets2013 Collection from the Internet Archive
 
 This is the documentation corresponding to the experiments reported in the short paper titled, 
-"Finally, a Downloadable Test Collection of Tweets". You can find the paper [here](link-goes-here).
+"Finally, a Downloadable Test Collection of Tweets". You can find the paper [here](https://cs.uwaterloo.ca/~jimmylin/publications/Sequiera_Lin_SIGIR2017.pdf).
 
 #### Download the collection:
 
